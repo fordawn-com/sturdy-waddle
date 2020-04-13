@@ -1,4 +1,5 @@
 from pyspark import SparkContext
+
 spark = SparkSession\
 .builder\
 .appName("My_Spark")\
