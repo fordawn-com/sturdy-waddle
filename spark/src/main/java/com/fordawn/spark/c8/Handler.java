@@ -10,6 +10,8 @@ import org.apache.spark.sql.SparkSession;
 
 import java.time.Instant;
 
+import static org.apache.spark.sql.functions.desc;
+
 @Slf4j
 public class Handler {
 
@@ -34,11 +36,31 @@ public class Handler {
                 .option("keyspace", "thingsboard")
                 .option("table", "ts_kv_cf")
                 .load();
-        Dataset<Row> where = load.where("entity_type = 'DEVICE' and ts > 1585670400000");
-        where.show();
+//        Dataset<Row> ts = load.orderBy(desc("ts")).limit(1);
+//        ts.show();
+//        Dataset<Row> where = load.where("entity_type = 'DEVICE' and ts > 1585670400000");
+//        where.show();
 
-        long count = where.count();
-        System.out.println("ts count: " + count);
+        Dataset<Row> siotTs = spark.read()
+                .format("org.apache.spark.sql.cassandra")
+                .option("keyspace", "siot")
+                .option("table", "ts_kv_cf")
+                .load();
+
+//        Dataset<Row> ts_desc = siotTs.orderBy(desc("ts"));
+//        ts_desc.show();
+
+//        long count = where.count();
+//        System.out.println("ts count: " + count);
+
+        Dataset<Row> load1 = spark.read()
+                .format("org.apache.spark.sql.cassandra")
+                .option("keyspace", "siot")
+                .option("table", "ts_kv_cf")
+                .load();
+        long count = load1.count();
+//        load1.sa
+        System.out.println(count);
     }
 
 }
