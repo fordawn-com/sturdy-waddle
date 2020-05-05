@@ -20,18 +20,24 @@ chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64
 # 指定谷歌浏览器路径
 driver = webdriver.Chrome(options=chrome_options,
                           executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe")
-url = 'https://space.bilibili.com/11299971/'
 
-driver.get(url)
-time.sleep(1)
-WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.CLASS_NAME, 'content')))
-span = driver.find_element_by_id("h-name")
-fan_num = driver.find_element_by_id("n-fs")
-fan_num_text = fan_num.text
-if fan_num_text[-1] == "万":
-    fan_num_text = float(fan_num_text[:-1]) * 10000
+start = 11299971
+end = start + 2
+for uid in range(start, end):
+    url = 'https://space.bilibili.com/%d/' % uid
+    print('url:%s' % url)
+    driver.get(url)
+    # time.sleep(1)
+    WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.CLASS_NAME, 'content')))
+    name = driver.find_element_by_id("h-name")
+    name_text = name.text
+    print(name_text)
+    fan_num = driver.find_element_by_id("n-fs")
+    fan_num_text = fan_num.text
+    if fan_num_text[-1] == "万":
+        fan_num_text = float(fan_num_text[:-1]) * 10000
 
-print(fan_num_text)
+    print('uid: %d 粉丝数：%s' % (uid, fan_num_text))
 
 html = driver.page_source
 driver.quit()
