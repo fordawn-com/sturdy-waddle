@@ -1,1 +1,1 @@
-66666${AnsiBackground.BLUE}
+66666
