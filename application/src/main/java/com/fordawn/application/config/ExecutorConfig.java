@@ -12,7 +12,8 @@ public class ExecutorConfig {
 
     @Bean("service1")
     public ListeningExecutorService defaultService1() {
-        return MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+        ListeningExecutorService listeningExecutorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+        return listeningExecutorService;
     }
 
     @Bean("service2")

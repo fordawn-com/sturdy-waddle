@@ -2,13 +2,16 @@ package com.fordawn.application.controller;
 
 import com.fordawn.application.model.dto.ResDto;
 import com.fordawn.application.service.InfoService;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,8 +77,25 @@ public class InfoController {
         }
         ListenableFuture<List<String>> listListenableFuture = Futures.allAsList(futures1);
         ListenableFuture<List<Long>> listListenableFuture1 = Futures.allAsList(futures2);
+        ListenableFuture<List<String>> transform = Futures.transform(listListenableFuture, strings -> strings, service);
+        ListenableFuture<List<String>> listListenableFuture2 = Futures.transformAsync(transform, new AsyncFunction<List<String>, List<String>>() {
+            @Override
+            public ListenableFuture<List<String>> apply(@Nullable List<String> input) throws Exception {
+                Thread.sleep(2255);
+                return service.submit(() -> input);
+            }
+        }, service);
 
-        List<String> strings = listListenableFuture.get();
+        Futures.transform(listListenableFuture2, new Function<List<String>, Object>() {
+            @Nullable
+            @Override
+            public Object apply(@Nullable List<String> input) {
+                return null;
+            }
+        },service);
+
+
+        List<String> strings = listListenableFuture2.get();
         List<Long> longs = listListenableFuture1.get();
 
         resDto.setLongList(longs);
