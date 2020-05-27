@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -102,5 +106,17 @@ public class InfoController {
         resDto.setStringList(strings);
         objectDeferredResult.setResult(resDto);
         return objectDeferredResult;
+    }
+
+
+    public static void main(String[] args) {
+        LocalDate localDate = LocalDate.now();
+        localDate = localDate.minusDays(7);
+        long l = localDate.toEpochDay();
+        LocalDateTime of = LocalDateTime.of(localDate, LocalTime.MIN);
+        System.out.println(of);
+        long l1 = of.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        System.out.println(l1);
+        System.out.println(localDate);
     }
 }
