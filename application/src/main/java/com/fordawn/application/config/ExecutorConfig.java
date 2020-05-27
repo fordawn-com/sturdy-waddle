@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 public class ExecutorConfig {
@@ -18,6 +19,8 @@ public class ExecutorConfig {
 
     @Bean("service2")
     public ListeningExecutorService defaultService2() {
+
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor();
         return MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
 }
