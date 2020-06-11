@@ -1,11 +1,17 @@
 package com.fordawn.test;
 
+import com.fasterxml.uuid.Generators;
 import com.fordawn.application.DemoApplication;
+import com.fordawn.application.dao.entity.RelationEntity;
+import com.fordawn.application.dao.mapper.RelationMapper;
+import com.fordawn.application.utils.UUIDConverter;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -13,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URL;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -26,6 +35,13 @@ public class MainTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private RelationMapper relationMapper;
+
+    @Autowired
+    @Qualifier("commander")
+    private ThreadPoolExecutor executor;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -45,5 +61,12 @@ public class MainTest {
     @Test
     public void test2() {
         log.info("{}", port);
+    }
+
+    @Test
+    public void test3() {
+//        List<RelationEntity> one = relationMapper.findOne();
+//        log.info("{}", one);
+
     }
 }

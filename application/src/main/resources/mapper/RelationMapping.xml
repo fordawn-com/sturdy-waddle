@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fordawn.application.dao.mapper.RelationMapper">
+
+    <resultMap id="BaseResultMap" type="com.fordawn.application.dao.entity.RelationEntity">
+        <result column="from_id" jdbcType="VARCHAR" property="fromId"/>
+        <result column="from_type" jdbcType="VARCHAR" property="fromType"/>
+        <result column="to_id" jdbcType="VARCHAR" property="toId"/>
+        <result column="to_type" jdbcType="VARCHAR" property="toType"/>
+        <result column="relation_type" jdbcType="VARCHAR" property="relationType"/>
+        <result column="relation_type_group" jdbcType="VARCHAR" property="relationTypeGroup"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.fordawn.application.dao.entity.RelationEntity">
+        insert into relation (from_id, from_type, to_id, to_type, relation_type, relation_type_group)
+        values
+        (#{fromId}, #{fromType}, #{toId}, #{toType}, #{relationType}, #{relationTypeGroup})
+    </insert>
+
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into relation
+        (from_id, from_type, to_id, to_type, relation_type, relation_type_group)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.fromId},
+            #{item.fromType},
+            #{item.toId},
+            #{item.toType},
+            #{item.relationType},
+            #{item.relationTypeGroup}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findOne" resultMap="BaseResultMap">
+        select * from relation limit 10
+    </select>
+
+</mapper>

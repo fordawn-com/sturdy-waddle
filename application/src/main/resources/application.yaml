@@ -1,2 +1,15 @@
 server:
   port: 29699
+
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.0.23:5432/siot
+    username: tbpostgres
+    password: QwJGJAzC#3s&dE2E
+#    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.fordawn.application.dao.entity

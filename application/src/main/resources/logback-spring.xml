@@ -17,7 +17,7 @@
         </layout>
     </appender>
 
-    <logger name="com.fordawn" level="debug" additivity="false">
+    <logger name="com.fordawn" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 

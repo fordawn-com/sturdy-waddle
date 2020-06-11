@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +41,12 @@ public class InfoController {
 
     @Autowired
     private InfoService infoService;
+
+    @GetMapping("/vv")
+    public String vv() {
+        infoService.bar();
+        return "hello";
+    }
 
     @GetMapping("/version")
     public DeferredResult getVersion() throws InterruptedException, ExecutionException {
@@ -96,7 +101,7 @@ public class InfoController {
             public Object apply(@Nullable List<String> input) {
                 return null;
             }
-        },service);
+        }, service);
 
 
         List<String> strings = listListenableFuture2.get();
