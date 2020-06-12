@@ -42,8 +42,9 @@ public class InfoController {
     @Autowired
     private InfoService infoService;
 
-    @GetMapping("/vv")
+//    @GetMapping("/vv")
     public String vv() {
+
         infoService.bar();
         return "hello";
     }
