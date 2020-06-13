@@ -9,17 +9,19 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @Slf4j
@@ -31,16 +33,31 @@ public class InfoService {
     @Autowired
     private RelationMapper relationMapper;
 
-    private ExecutorService executor;
+    private ThreadPoolExecutor executor;
 
-    ListeningExecutorService service;
+    private ListeningExecutorService service;
 
     @PostConstruct
     public void init() {
-//        executor = Executors.newFixedThreadPool(20);
-        executor = Executors.newWorkStealingPool(8);
-        service = MoreExecutors
-                .listeningDecorator(Executors.newWorkStealingPool());
+        executor = new ThreadPoolExecutor(500, 500,
+                60, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(500),
+                new NameTreadFactory());
+        executor.prestartAllCoreThreads();
+
+        service = MoreExecutors.listeningDecorator(Executors.newWorkStealingPool());
+    }
+
+    static class NameTreadFactory implements ThreadFactory {
+        private final AtomicLong mThreadNum = new AtomicLong(1);
+
+        @Override
+        public Thread newThread(@NonNull Runnable r) {
+            String format = String.format("%s-%03d", "ford-pool-", mThreadNum.getAndIncrement());
+            Thread t = new Thread(r, format);
+            log.info("{} has been created", t.getName());
+            return t;
+        }
     }
 
     @PreDestroy
@@ -52,7 +69,7 @@ public class InfoService {
     }
 
 
-    public CompletableFuture getInfo() {
+    public CompletableFuture<?> getInfo() {
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
             infoDao.getInfo();
         }, executor);
@@ -62,10 +79,53 @@ public class InfoService {
         return voidCompletableFuture;
     }
 
-    @Bean
-    public void foo() {
+    public static final int THREAD_NUM = 500;
+    public static final long HANDLE_PER_THREAD = Long.MAX_VALUE;
 
+    public static List<Object> oc = Lists.newLinkedList();
+
+    static long getFreeMemory() {
+        return Runtime.getRuntime().freeMemory() / (1024 * 1024);
+    }
+
+    @Bean("te_test")
+    public void foo() {
         log.error("666");
+
+        List<CompletableFuture<Void>> futures = Lists.newLinkedList();
+        for (int i = 0; i < THREAD_NUM; i++) {
+            int finalI = i;
+            CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
+                BigInteger index = BigInteger.ZERO;
+                while (true) {
+                    Object o = new Object();
+                    oc.add(o);
+                    if (index.mod(BigInteger.valueOf(30000L)).equals(BigInteger.ZERO)) {
+                        log.info("{}-{}-{}-{}-{}",
+                                String.format("%03d", finalI),
+                                RandomStringUtils.randomAlphabetic(8),
+                                index,
+                                oc.size(),
+                                getFreeMemory()
+                        );
+                    }
+//                    index = index.add(BigInteger.ONE);
+                }
+            }, executor);
+            futures.add(voidCompletableFuture);
+        }
+
+        CompletableFuture<Void> voidCompletableFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        voidCompletableFuture
+                .thenApplyAsync(r -> "hello world, finish.")
+                .whenCompleteAsync((r, t) -> {
+                    if (Objects.isNull(t)) {
+                        log.warn("{}", r);
+                    } else {
+                        log.error("finish wrong: {}", t.getMessage());
+                        throw new RuntimeException(t);
+                    }
+                }, executor);
     }
 
     public void bar() {
@@ -91,5 +151,6 @@ public class InfoService {
                 }
             }));
         }
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
     }
 }
