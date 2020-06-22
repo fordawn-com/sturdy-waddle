@@ -6,3 +6,4 @@
 this is a master project. It includes tools to improve productivity per unit time. At the same time, it provides some entertainment functions, so as to get some happiness while working.
 
 
+[jetBrains](https://www.jetbrains.com/?from=sturdy-waddle)
