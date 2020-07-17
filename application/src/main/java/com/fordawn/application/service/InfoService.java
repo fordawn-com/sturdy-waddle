@@ -88,7 +88,7 @@ public class InfoService {
         return Runtime.getRuntime().freeMemory() / (1024 * 1024);
     }
 
-    @Bean("te_test")
+//    @Bean("te_test")
     public void foo() {
         log.error("666");
 
