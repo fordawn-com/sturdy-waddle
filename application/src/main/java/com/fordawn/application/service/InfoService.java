@@ -39,7 +39,7 @@ public class InfoService {
 
     @PostConstruct
     public void init() {
-        executor = new ThreadPoolExecutor(500, 500,
+        executor = new ThreadPoolExecutor(5, 500,
                 60, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(500),
                 new NameTreadFactory());
