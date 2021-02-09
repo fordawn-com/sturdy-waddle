@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.fordawn.application.dao.mapper")
+@MapperScan({"com.fordawn.application"})
 @Slf4j
 public class DemoApplication {
 
