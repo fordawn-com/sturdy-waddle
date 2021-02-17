@@ -5,7 +5,6 @@ import com.f.app.d.StateEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.state.State;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
