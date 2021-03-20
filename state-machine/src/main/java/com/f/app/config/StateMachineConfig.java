@@ -1,8 +1,7 @@
-package com.f.app.c;
+package com.f.app.config;
 
 import com.f.app.d.EventEnum;
 import com.f.app.d.StateEnum;
-import oracle.jvm.hotspot.jfr.ThreadStates;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
